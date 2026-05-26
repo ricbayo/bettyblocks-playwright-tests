@@ -1,0 +1,153 @@
+{
+  "cookies": [
+    {
+      "name": "fusionauth.timezone",
+      "value": "Asia/Manila",
+      "domain": "id.bettyblocks.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fusionauth.known-device.SG-g0B25hy4epKCHjBzeaRy0c17zYsteY28Ad50zO9Q",
+      "value": "n3tLuyFMPZ6LxFwJyQrPE3ShS2trcUECPKGFgmf4rO-uFt4BxNwIh-c3_Q8vmY8yM41J2hDrDG0r",
+      "domain": "id.bettyblocks.com",
+      "path": "/",
+      "expires": 1814358924.911354,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "federated.csrf",
+      "value": "QkJCAGplb3RTUm52cExDZ1N4bDk=",
+      "domain": "id.bettyblocks.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fusionauth.remember-device",
+      "value": "QkJCARxNpfKO-cn2NgKsl2fmRnuNwyvvNAXMQUPd9bN2jQBwCwxOLg==",
+      "domain": "id.bettyblocks.com",
+      "path": "/",
+      "expires": 1814358925.215831,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fusionauth.sso",
+      "value": "QkJCAEFwaFVTaUJnVVJvNV9mdm5kOWwzY19hR1M4QTJySzctcEFrcHo1NS1qa2Zlc3FySXNmQ3pjZWNOOXFKRUstcFJ2bEt5eG5UZVZNTWFzclVFSUFUT2llcVVzQzh4RWF4d2gtQjBmNXprMG1oZU1XVUhpR3Q0dHBUZGFzRHh3VWRQd2s2el9LRF9sdnNpb2pzbU1Wd3pOTDZp",
+      "domain": "id.bettyblocks.com",
+      "path": "/",
+      "expires": 1814358925.217125,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "data_api_cookie",
+      "value": "{\"c2dc14cbb4c94e37bc44dcb488adf209\":\"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBfdXVpZCI6ImMyZGMxNGNiYjRjOTRlMzdiYzQ0ZGNiNDg4YWRmMjA5IiwiYXVkIjoiSm9rZW4iLCJidWlsZGVyIjp0cnVlLCJleHAiOjE3Nzk4MDI1MjcsImlhdCI6MTc3OTc5ODkyNywiaXNzIjoiSm9rZW4iLCJqdGkiOiIzMnBocmNlcDFiamowOGZxZHMwMTVtaDQiLCJuYmYiOjE3Nzk3OTg5Mjd9.jd551RGVOXqsk6iXj-YYBgnR8UzqfPi_cKZ07mw5Dkht4vsj6veOTR6FDrDhHlXlUsalq6VpopazBeQ5RoP0AA\"}",
+      "domain": "qa-assignment-ric.betty.app",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fusionauth.timezone",
+      "value": "Asia/Manila",
+      "domain": "login.bettyblocks.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__cf_bm",
+      "value": "cIP4V7RwXj2ULvctmzPdCzXHtDN34F1m2gNRt2Iezxw-1779798932.7383182-1.0.1.1-CbTCMP3gmfTF.Li8h_aauv5Tvz2mscPTImsFXZgJqfNn53AYlElvPDEr8SBItfXxmEPMhQOyCBszp7olpUUsHCMRnRelss4GW2TnDy8b0__dBKNV5ex3JbbRbjwxzOlv",
+      "domain": ".www.bettyblocks.com",
+      "path": "/",
+      "expires": 1779800731.957606,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "fusionauth.known-device.WaNCukx14OJtOY9MxRiqRT4X94W2vwgLBcxMUNLGRs4",
+      "value": "q5pqSZVH-6oz3kxIADDrw-lu7IEsjsDcsSWxhrWk3abEVwRfOYsZAuVwFQmPEpWRI1sQUhiJbijA",
+      "domain": "login.bettyblocks.com",
+      "path": "/",
+      "expires": 1814358932.44849,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fusionauth.remember-device",
+      "value": "QkJCAXBTf0XVdZzj1ExETjqB8HDqqzgq5dZa7iewNEkR9fRowBUBPQ==",
+      "domain": "login.bettyblocks.com",
+      "path": "/",
+      "expires": 1814358932.735577,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fusionauth.sso",
+      "value": "QkJCAEFzbjhtSGRma2tkY1d5RFM1UFI4eFBoZjU1bVJrTFBDc2pRWmdzQWRLYUh6R2ppS3ROOEZPTTBZWUJwblBGdTNwTi05MFdsOHpDR1p3alJoekF1VU9ZZjhYbGR6bmE2cndCeVNqajZLZHI3MURZZFkzUnZMVkpZckZuR2h4WmpyZFdNQ1Q4YjNJWUQ5MVdUamdwTHVGMzNB",
+      "domain": "login.bettyblocks.com",
+      "path": "/",
+      "expires": 1814358932.736155,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "session_id",
+      "value": "66e64de84a7d42389cc848e9b7216980",
+      "domain": "qa-assignment-ric.betty.app",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "betty_jwt",
+      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBfdXVpZCI6ImMyZGMxNGNiYjRjOTRlMzdiYzQ0ZGNiNDg4YWRmMjA5IiwiYXVkIjoiSm9rZW4iLCJhdXRoX3Byb2ZpbGUiOiI1YmY5ZWJhMzQ2MzY0OTVkODBlZDVhNzkwY2EzOTA3NyIsImNhc190b2tlbiI6IjdhYzVjYWQ4NDg4ODY5N2NhOTZiMTljZjhkYWE0ODAxNTYyNTVlZGIiLCJleHAiOjE3Nzk4MDYxMzMsImlhdCI6MTc3OTc5ODkzMywiaXNzIjoiSm9rZW4iLCJqdGkiOiIzMnBocmNxdmI1NzQyODlzYmswMG5kbDYiLCJsb2NhbGUiOm51bGwsIm5iZiI6MTc3OTc5ODkzMywicm9sZXMiOlsxXSwidXNlcl9pZCI6Mn0.q1nwcx_BBLNNr7Wdh3-FTz2DxgdzH_ZF685ERPeTHULQs5xXN2B2Yl8eCiu5Z-2sMQZw0BNyjc_gP9ESiyiGlw",
+      "domain": "qa-assignment-ric.betty.app",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://id.bettyblocks.com",
+      "localStorage": [
+        {
+          "name": "login_method",
+          "value": "regular"
+        },
+        {
+          "name": "__mpq_d846feecc94a6521627e3181b5c20b57_ev",
+          "value": "[{\"id\":\"ijv8ncrbdh202zsz\",\"flushAfter\":1779798933717,\"payload\":{\"event\":\"Login page viewed\",\"properties\":{\"$os\":\"Windows\",\"$browser\":\"Chrome\",\"$current_url\":\"https://id.bettyblocks.com/oauth2/authorize?url=https%3A%2F%2Fid.bettyblocks.com&client_id=22222222-2222-2222-2222-222222222222&redirect_uri=https%3A%2F%2Ffusionauth-dispatcher.betty.services%2Foauth%2Fbuilder&response_type=code&scope=offline_access&state\",\"$browser_version\":148,\"$screen_height\":720,\"$screen_width\":1280,\"mp_lib\":\"web\",\"$lib_version\":\"2.79.0\",\"$insert_id\":\"eua1bebbto13uuwx\",\"time\":1779798923.717,\"distinct_id\":\"$device:5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$device_id\":\"5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"login_source\":\"ide\",\"token\":\"d846feecc94a6521627e3181b5c20b57\",\"mp_sent_by_lib_version\":\"2.79.0\"}}},{\"id\":\"qla08kabym1obcv0\",\"flushAfter\":1779798933718,\"payload\":{\"event\":\"Login form submitted\",\"properties\":{\"$os\":\"Windows\",\"$browser\":\"Chrome\",\"$current_url\":\"https://id.bettyblocks.com/oauth2/authorize?url=https%3A%2F%2Fid.bettyblocks.com&client_id=22222222-2222-2222-2222-222222222222&redirect_uri=https%3A%2F%2Ffusionauth-dispatcher.betty.services%2Foauth%2Fbuilder&response_type=code&scope=offline_access&state\",\"$browser_version\":148,\"$screen_height\":720,\"$screen_width\":1280,\"mp_lib\":\"web\",\"$lib_version\":\"2.79.0\",\"$insert_id\":\"vjtm315qksurx5o2\",\"time\":1779798923.718,\"distinct_id\":\"$device:5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$device_id\":\"5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"login_source\":\"ide\",\"token\":\"d846feecc94a6521627e3181b5c20b57\",\"mp_sent_by_lib_version\":\"2.79.0\"}}},{\"id\":\"adsnyki3yspbctze\",\"flushAfter\":1779798934466,\"payload\":{\"event\":\"Login page viewed\",\"properties\":{\"$os\":\"Windows\",\"$browser\":\"Chrome\",\"$referrer\":\"https://id.bettyblocks.com/\",\"$referring_domain\":\"id.bettyblocks.com\",\"$current_url\":\"https://id.bettyblocks.com/oauth2/authorize\",\"$browser_version\":148,\"$screen_height\":720,\"$screen_width\":1280,\"mp_lib\":\"web\",\"$lib_version\":\"2.79.0\",\"$insert_id\":\"myqixeuujbqsxy6o\",\"time\":1779798924.466,\"distinct_id\":\"$device:5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$device_id\":\"5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"login_source\":\"ide\",\"token\":\"d846feecc94a6521627e3181b5c20b57\",\"mp_sent_by_lib_version\":\"2.79.0\"}}},{\"id\":\"02mxcriy561z9z2t\",\"flushAfter\":1779798934566,\"payload\":{\"event\":\"Login form submitted\",\"properties\":{\"$os\":\"Windows\",\"$browser\":\"Chrome\",\"$referrer\":\"https://id.bettyblocks.com/\",\"$referring_domain\":\"id.bettyblocks.com\",\"$current_url\":\"https://id.bettyblocks.com/oauth2/authorize\",\"$browser_version\":148,\"$screen_height\":720,\"$screen_width\":1280,\"mp_lib\":\"web\",\"$lib_version\":\"2.79.0\",\"$insert_id\":\"s4wta5x0a14xu5fj\",\"time\":1779798924.566,\"distinct_id\":\"$device:5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$device_id\":\"5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"login_source\":\"ide\",\"token\":\"d846feecc94a6521627e3181b5c20b57\",\"mp_sent_by_lib_version\":\"2.79.0\"}}}]"
+        },
+        {
+          "name": "mp_d846feecc94a6521627e3181b5c20b57_mixpanel",
+          "value": "{\"distinct_id\":\"$device:5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$device_id\":\"5eb8c2f0-557a-4ffe-a4c4-616f7a8c3adc\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"__mps\":{},\"__mpso\":{\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\"},\"__mpus\":{},\"__mpa\":{},\"__mpu\":{},\"__mpr\":[],\"__mpap\":[]}"
+        }
+      ]
+    }
+  ]
+}

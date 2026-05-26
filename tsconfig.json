@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022",
+    "lib": ["DOM", "ES2022"],
+
+    /* Module System */
+    "module": "commonjs",
+    "moduleResolution": "node",
+
+    /* Type Safety */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+
+    /* Interop */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Node + Playwright Types */
+    "types": ["node", "@playwright/test"],
+
+    /* Paths */
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["tests/pages/*"],
+      "@fixtures/*": ["tests/fixtures/*"],
+      "@utils/*": ["tests/utils/*"],
+      "@specs/*": ["tests/specs/*"]
+    },
+
+    /* Output */
+    "outDir": "dist",
+    "resolveJsonModule": true,
+
+    /* Quality */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* VS Code friendliness */
+    "sourceMap": true
+  },
+
+  "include": [
+    "tests",
+    "playwright.config.ts"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

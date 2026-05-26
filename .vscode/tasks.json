@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run All Tests",
+      "type": "shell",
+      "command": "npx playwright test"
+    },
+    {
+      "label": "Run Smoke Tests",
+      "type": "shell",
+      "command": "npx playwright test tests/specs/smoke"
+    },
+    {
+      "label": "Run Functional Tests",
+      "type": "shell",
+      "command": "npx playwright test tests/specs/functional"
+    },
+    {
+      "label": "Run Integration Tests",
+      "type": "shell",
+      "command": "npx playwright test tests/specs/integration"
+    },
+    {
+      "label": "Open Playwright UI",
+      "type": "shell",
+      "command": "npx playwright test --ui"
+    }
+  ]
+}
