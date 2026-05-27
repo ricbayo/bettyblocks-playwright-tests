@@ -46,7 +46,7 @@ test.describe('Projects page — /projects', () => {
     await expect(modal.container).toBeVisible();
   });
 
-  test('PR-08 status defaults to New and disabled', async ({ projectsPage }) => {
+  test('PR-05 status defaults to New and disabled', async ({ projectsPage }) => {
     const modal = await projectsPage.openCreateModal();
 
     await expect(modal.statusSelect).toBeVisible();
@@ -62,7 +62,7 @@ test.describe('Projects page — /projects', () => {
   // CREATE
   // ─────────────────────────────
 
-  test('PR-13 valid project is created', async ({ projectsPage }) => {
+  test('PR-06 valid project is created', async ({ projectsPage }) => {
     const data = {
       ...ProjectData.valid,
       name: `PW ${Date.now()}`
@@ -74,7 +74,7 @@ test.describe('Projects page — /projects', () => {
       .toBe(true);
   });
 
-  test('PR-14 created project has New status', async ({ projectsPage }) => {
+  test('PR-07 created project has New status', async ({ projectsPage }) => {
     const data = {
       ...ProjectData.valid,
       name: `PW Status ${Date.now()}`
@@ -91,7 +91,7 @@ test.describe('Projects page — /projects', () => {
   // ACTIONS
   // ─────────────────────────────
 
-  test('PR-22 View navigates to detail', async ({ page, projectsPage }) => {
+  test('PR-08 View navigates to detail', async ({ page, projectsPage }) => {
     const projectName = await projectsPage.getFirstProjectName();
 
     await projectsPage.clickView(projectName);
@@ -99,7 +99,7 @@ test.describe('Projects page — /projects', () => {
     await expect(page).toHaveURL(/\/projects\/\d+/);
   });
 
-  test('PR-23 Edit opens modal', async ({ projectsPage }) => {
+  test('PR-09 Edit opens modal', async ({ projectsPage }) => {
     const projectName = await projectsPage.getFirstProjectName();
 
     const modal = await projectsPage.clickEdit(projectName);
@@ -110,7 +110,7 @@ test.describe('Projects page — /projects', () => {
       .toBe(true);
   });
 
-  test('PR-24 Copy creates duplicated project', async ({ projectsPage }) => {
+  test('PR-10 Copy creates duplicated project', async ({ projectsPage }) => {
     const projectName = await projectsPage.getFirstProjectName();
 
     await projectsPage.clickCopy(projectName);
@@ -120,7 +120,7 @@ test.describe('Projects page — /projects', () => {
     ).toBe(true);
   });
 
-  test('PR-25 Delete removes project', async ({ projectsPage }) => {
+  test('PR-11 Delete removes project', async ({ projectsPage }) => {
     const data = {
       name: `PW Delete ${Date.now()}`,
       deadline: ProjectData.valid.deadline
@@ -135,7 +135,7 @@ test.describe('Projects page — /projects', () => {
     ).toBe(false);
   });
 
-  test('PR-26 Close changes status to Executed', async ({ projectsPage }) => {
+  test('PR-12 Close changes status to Executed', async ({ projectsPage }) => {
     const data = {
       name: `PW Close ${Date.now()}`,
       deadline: ProjectData.valid.deadline
