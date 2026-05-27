@@ -205,102 +205,151 @@ export class ProjectsPage extends BasePage {
 // ─────────────────────────────────────────────────────────────────────────────
 // ProjectDetailPage
 // ─────────────────────────────────────────────────────────────────────────────
+
 export class ProjectDetailPage extends BasePage {
+
+  readonly detailsCard: Locator;
+
   readonly backBtn: Locator;
   readonly btnEdit: Locator;
   readonly btnClose: Locator;
   readonly btnAddTask: Locator;
+
+  readonly taskTable: Locator;
   readonly taskHeader: Locator;
   readonly taskRows: Locator;
-  readonly taskTable: Locator;
 
-  get nameEl(): Locator { return this.page.locator(S.projectDetail.detailValue('Project Name')); }
-  get statusEl(): Locator { return this.page.locator(S.projectDetail.detailValue('Status:')); }
-  get deadlineEl(): Locator { return this.fieldValue('Deadline:'); }
-  get ownerEl(): Locator { return this.fieldValue('Owner:'); }
+  get nameEl(): Locator {
+    return this.page.locator(S.projectDetail.detailValue('Project Name'));
+  }
+
+  get statusEl(): Locator {
+    return this.page.locator(S.projectDetail.detailValue('Status'));
+  }
+
+  get deadlineEl(): Locator {
+    return this.fieldValue('Deadline');
+  }
+
+  get ownerEl(): Locator {
+    return this.fieldValue('Owner');
+  }
 
   constructor(page: Page) {
     super(page);
-    this.backBtn = page.getByRole('link', { name: /back|back to projects/i });
-    this.btnEdit = page.getByRole('button', { name: /edit project/i });
-    this.btnClose = page.getByRole('button', { name: /close project/i });
-    this.btnAddTask = page.locator('[data-testid="btn-add-task"]').or(page.getByRole('button', { name: /add task/i }));
-    //this.taskRows = page.locator('[data-testid="project-task-row"]').or(page.getByRole('row').filter({ hasNot: page.getByRole('columnheader') }));
-    this.taskTable = page.getByRole('table');
-    this.taskHeader = this.taskTable.locator('tbody tr').first();
-    this.taskRows = this.taskTable.locator('tbody tr:not(:first-child)');
+
+    this.detailsCard = page.locator(S.projectDetail.detailsCard);
+
+    this.backBtn = page.locator(S.projectDetail.btnBack);
+
+    this.btnEdit = page.locator(S.projectDetail.btnEdit);
+
+    this.btnClose = page.locator(S.projectDetail.btnClose);
+
+    this.btnAddTask = page.locator(S.projectDetail.btnAddTask);
+
+    this.taskTable = page.locator(S.projectDetail.table);
+
+    this.taskHeader = this.taskTable.locator(S.projectDetail.headerRow);
+
+    this.taskRows = this.taskTable.locator(S.projectDetail.rows);
   }
 
   async goto(projectId: string | number) {
     await this.page.goto(`/projects/${projectId}`);
-    await this.page.waitForLoadState('networkidle');
+    await expect(this.taskTable).toBeVisible();
   }
 
-  async getTaskColumnHeader(columnName: string): Promise<Locator> {
-    return this.taskHeader.locator('td p', {
-      hasText: new RegExp(`^${columnName}$`, 'i'),
-    });
+  getTaskColumnHeader(columnName: string): Locator {
+    return this.taskHeader.getByText(
+      new RegExp(`^${columnName}$`, 'i')
+    );
   }
 
   async openEditModal(): Promise<EditProjectModal> {
     await this.btnEdit.click();
+
     const modal = new EditProjectModal(this.page);
+
     await modal.waitForVisible();
+
     return modal;
   }
 
   async openAddTaskModal(): Promise<AddTaskModal> {
     await this.btnAddTask.click();
+
     const modal = new AddTaskModal(this.page);
+
     await modal.waitForVisible();
+
     return modal;
   }
 
-  async getTaskRowByName(name: string): Promise<Locator> {
+  getTaskRowByName(name: string): Locator {
     return this.taskRows.filter({ hasText: name });
   }
 
+  getTaskStatusLocator(name: string): Locator {
+    return this
+      .getTaskRowByName(name)
+      .locator('td')
+      .nth(3);
+  }
+
   async clickCompleteTask(name: string) {
-    const row = await this.getTaskRowByName(name);
-    await row.locator('[data-testid="ptask-action-complete"]')
-      .or(row.getByRole('button', { name: /complete/i }))
-      .click();
-    await this.quickWait(1000);
+    const row = this.getTaskRowByName(name);
+
+    await row.locator(S.projectDetail.btnTaskComplete).click();
+
+    await expect(
+      this.getTaskStatusLocator(name)
+    ).toContainText(/completed/i);
   }
 
   async clickEditTask(name: string): Promise<EditTaskModal> {
-    const row = await this.getTaskRowByName(name);
-    await row.locator('[data-testid="ptask-action-edit"]')
-      .or(row.getByRole('button', { name: /edit/i }))
-      .click();
-    await this.quickWait();
+    const row = this.getTaskRowByName(name);
+
+    await row.locator(S.projectDetail.btnTaskEdit).click();
+
     const modal = new EditTaskModal(this.page);
+
     await modal.waitForVisible();
+
     return modal;
   }
 
   async clickDeleteTask(name: string) {
-    const row = await this.getTaskRowByName(name);
-    await row.locator('[data-testid="ptask-action-delete"]')
-      .or(row.getByRole('button', { name: /delete/i }))
-      .click();
-    await this.quickWait(1000);
+    const row = this.getTaskRowByName(name);
+
+    await row.locator(S.projectDetail.btnTaskDelete).click();
+
     await this.confirmDialog();
-    await this.quickWait(2000);
+
+    await expect.poll(async () => row.count()).toBe(0);
   }
 
   async closeProject() {
     await this.btnClose.click();
-    await this.confirmDialog();
-    await this.quickWait(2000);
-  }
 
+    await this.confirmDialog();
+
+    await expect(this.statusEl)
+      .toContainText(/executed|closed/i);
+  }
 
   private fieldValue(label: string): Locator {
     return this.page.locator(
-      `p:has-text("${label}") >> xpath=following-sibling::p[1]`
-    ).first();
+      S.projectDetail.detailValue(label)
+    );
   }
+
+  async rowExists(name: string): Promise<boolean> {
+    await this.quickWait(1000);
+    const row = await this.getTaskRowByName(name);
+    return (await row.count()) > 0;
+  }
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

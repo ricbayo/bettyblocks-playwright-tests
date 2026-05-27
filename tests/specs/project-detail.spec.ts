@@ -164,7 +164,9 @@ test.describe('Project Detail page — /projects/:id', () => {
 
     await detailPage.clickDeleteTask(taskName);
     await page.waitForLoadState('networkidle');
-    expect(await (await detailPage.getTaskRowByName(taskName)).count()).toBe(0);
+    await expect.poll(async () =>
+      await detailPage.rowExists(taskName)
+    ).toBe(false);
   });
 
   // ── Close project ──────────────────────────────────────────────────

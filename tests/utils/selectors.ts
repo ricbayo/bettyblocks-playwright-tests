@@ -103,10 +103,16 @@ export const S = {
       'td:nth-child(2)',
   },
 
+
   // ─────────────────────────────────────────────────────────────
   // Project Detail
   // ─────────────────────────────────────────────────────────────
+
   projectDetail: {
+
+    detailsCard:
+      '[data-testid="project-details-card"], div:has(p:has-text("Project Name"))',
+
     // Header actions
     btnBack:
       '[data-testid="btn-back-projects"], a:has-text("Back"), a:has-text("Back to Projects")',
