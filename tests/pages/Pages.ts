@@ -352,9 +352,6 @@ export class ProjectDetailPage extends BasePage {
 
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TasksPage
-// ─────────────────────────────────────────────────────────────────────────────
 export class TasksPage extends BasePage {
   readonly btnNewTask: Locator;
   readonly taskTable: Locator;
@@ -363,10 +360,11 @@ export class TasksPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.btnNewTask = page.locator('[data-testid="btn-new-task"]').or(page.getByRole('button', { name: /new task/i }));
-    this.taskTable = page.getByRole('table');
-    this.taskHeader = this.taskTable.locator('tbody tr').first();
-    this.taskRows = this.taskTable.locator('tbody tr:not(:first-child)');
+
+    this.btnNewTask = page.locator(S.tasks.btnNewTask);
+    this.taskTable = page.locator(S.tasks.table);
+    this.taskHeader = this.taskTable.locator(S.tasks.headerRow);
+    this.taskRows = this.taskTable.locator(S.tasks.rows);
   }
 
   async goto() {
@@ -375,7 +373,7 @@ export class TasksPage extends BasePage {
   }
 
   async getTaskColumnHeader(columnName: string): Promise<Locator> {
-    return this.taskHeader.locator('td p', {
+    return this.taskHeader.locator(S.tasks.cellText, {
       hasText: new RegExp(`^${columnName}$`, 'i'),
     });
   }
@@ -392,7 +390,9 @@ export class TasksPage extends BasePage {
   }
 
   async rowExists(name: string): Promise<boolean> {
-    return (await (await this.getRowByName(name)).count()) > 0;
+    await this.quickWait(1000);
+    const row = await this.getRowByName(name);
+    return (await row.count()) > 0;
   }
 
   async getRowCount(): Promise<number> {
@@ -401,25 +401,22 @@ export class TasksPage extends BasePage {
 
   async clickView(name: string) {
     const row = await this.getRowByName(name);
-    await row.locator('[data-testid="task-action-view"]')
-      .or(row.getByRole('button', { name: /view/i }))
-      .click();
-    await this.page.waitForURL(/\/tasks\/\d+/, { timeout: 15_000 });
+    await row.locator(S.tasks.row.view).first().click();
+    await this.page.waitForURL(/\/tasks\/\d+/);
   }
 
   async clickComplete(name: string) {
     const row = await this.getRowByName(name);
-    await row.locator('[data-testid="task-action-complete"]')
-      .or(row.getByRole('button', { name: /complete/i }))
-      .click();
+    await row.locator(S.tasks.row.complete).first().click();
     await this.quickWait(1000);
+    await this.confirmDialog();
+
   }
 
   async clickEdit(name: string): Promise<EditTaskModal> {
     const row = await this.getRowByName(name);
-    await row.locator('[data-testid="task-action-edit"]')
-      .or(row.getByRole('button', { name: /edit/i }))
-      .click();
+    await row.locator(S.tasks.row.edit).first().click();
+
     const modal = new EditTaskModal(this.page);
     await modal.waitForVisible();
     return modal;
@@ -427,17 +424,34 @@ export class TasksPage extends BasePage {
 
   async clickDelete(name: string) {
     const row = await this.getRowByName(name);
-    await row.locator('[data-testid="task-action-delete"]')
-      .or(row.getByRole('button', { name: /delete/i }))
-      .click();
+    await row.locator(S.tasks.row.delete).first().click();
+    await this.quickWait(1000);
     await this.confirmDialog();
   }
 
   async getRowStatus(name: string): Promise<string> {
     const row = await this.getRowByName(name);
-    return this.getText(
-      row.locator('td').nth(4).locator('p')
-    );
+    return this.getText(row.locator('td').nth(4).locator('p'));
+  }
+
+  async getviewBtn(name: string): Promise<Locator> {
+    const row = await this.getRowByName(name);
+    return row.locator(S.tasks.row.view).first();
+  }
+
+  async getcompleteBtn(name: string): Promise<Locator> {
+    const row = await this.getRowByName(name);
+    return row.locator(S.tasks.row.complete).first();
+  }
+
+  async geteditBtn(name: string): Promise<Locator> {
+    const row = await this.getRowByName(name);
+    return row.locator(S.tasks.row.edit).first();
+  }
+
+  async getdeleteBtn(name: string): Promise<Locator> {
+    const row = await this.getRowByName(name);
+    return row.locator(S.tasks.row.delete).first();
   }
 }
 

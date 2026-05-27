@@ -167,13 +167,18 @@ export const S = {
     btnNewTask:
       '[data-testid="btn-new-task"], button:has-text("New Task")',
 
-    table: '[role="table"], table',
+    table:
+      '[data-testid="project-tasks-table"], table',
 
-    tableBodyRows: 'tbody tr',
+    headerRow:
+      'tbody tr:first-child',
+
+    rows:
+      'tbody tr:not(:first-child)',
 
     // Actions (row scoped)
     row: {
-      view: '[data-testid="task-action-view"], button:has-text("View")',
+      view: '[data-testid="task-action-view"], a:has-text("View")',
       edit: '[data-testid="task-action-edit"], button:has-text("Edit")',
       delete: '[data-testid="task-action-delete"], button:has-text("Delete")',
       complete:
