@@ -1,5 +1,5 @@
 // tests/pages/Pages.ts
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import { S } from '../utils/selectors';
 import { BasePage } from './BasePage';
 import {
@@ -76,12 +76,18 @@ export class ProjectsPage extends BasePage {
   readonly btnNewProject: Locator;
   readonly table: Locator;
   readonly rows: Locator;
+  readonly headers: Locator;
 
   constructor(page: Page) {
     super(page);
     this.btnNewProject = page.locator(S.projects.btnNew);
     this.table = page.locator(S.projects.table);
     this.rows = this.table.locator(S.projects.rows);
+    this.headers = this.table.locator(S.projects.rowHeader);
+  }
+
+  get firstDataRow(): Locator {
+    return this.rows.nth(1);
   }
 
   async goto() {
@@ -96,9 +102,33 @@ export class ProjectsPage extends BasePage {
     return modal;
   }
 
+  async createProject(data: { name?: string; description?: string; deadline?: string }) {
+    const modal = await this.openCreateModal();
+    await modal.fill(data);
+    await modal.submit();
+
+    await expect(modal.container).toBeHidden({
+      timeout: 12000
+    });
+  }
+
+  async getFirstProjectName(): Promise<string> {
+    return (
+      await this.firstDataRow
+        .locator('td')
+        .nth(1)
+        .innerText()
+    ).trim();
+  }
+
   async getRowByName(name: string): Promise<Locator> {
     await this.quickWait();
     return this.rows.filter({ hasText: name });
+  }
+
+  async getRowHeaderByName(name: string): Promise<Locator> {
+    await this.quickWait();
+    return this.headers.filter({ hasText: name });
   }
 
   async rowExists(name: string): Promise<boolean> {

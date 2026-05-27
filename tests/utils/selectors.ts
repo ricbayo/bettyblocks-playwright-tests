@@ -73,6 +73,9 @@ export const S = {
     rows:
       'tbody tr:not(:first-child)',
 
+    rowHeader:
+      'tbody tr:first-child td p',
+
     rowByName: (name: string) =>
       `tbody tr:has-text("${name}")`,
 
