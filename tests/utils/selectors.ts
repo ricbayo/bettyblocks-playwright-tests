@@ -193,44 +193,26 @@ export const S = {
   // Task Detail
   // ─────────────────────────────────────────────────────────────
   taskDetail: {
-    btnBack:
-      '[data-testid="btn-back-tasks"], a:has-text("Back to Tasks")',
+    btnBack: '[data-testid="btn-back-tasks"], a:has-text("Back to Tasks")',
 
-    btnEdit:
-      '[data-testid="btn-edit-task"], button:has-text("Edit")',
+    btnEdit: '[data-testid="btn-edit-task"], button:has-text("Edit")',
+    btnComplete: '[data-testid="btn-complete-task"], button:has-text("Complete")',
+    btnDelete: '[data-testid="btn-delete-task"], button:has-text("Delete")',
 
-    btnComplete:
-      '[data-testid="btn-complete-task"], button:has-text("Complete")',
+    headerName: 'p:has-text("Task Name") + p',
+    headerPriority: 'p:has-text("Priority:") + p',
+    headerStatus: 'p:has-text("Status:") + p',
 
-    btnDelete:
-      '[data-testid="btn-delete-task"], button:has-text("Delete")',
+    description: 'p:has-text("Description") + p',
 
-    headerName:
-      'p:has-text("Task Name") + p',
+    projectLink: 'div:has(> p:text-is("Project")) a',
 
-    headerPriority:
-      'p:has-text("Priority:") + p',
+    assignedTo: 'div:has(> p:text-is("Assigned To")) div p',
+    executionDate: 'div:has(> p:text-is("Execution Date")) div p',
+    deadline: 'div:has(> p:text-is("Deadline")) div p',
+    createdDate: 'div:has(> p:text-is("Created Date")) div p',
 
-    headerStatus:
-      'p:has-text("Status:") + p',
-
-    description:
-      'p:has-text("Description") + p',
-
-    assignedTo:
-      'div:has(> p:text-is("Assigned To")) div p',
-
-    executionDate:
-      'div:has(> p:text-is("Execution Date")) div p',
-
-    deadline:
-      'div:has(> p:text-is("Deadline")) div p',
-
-    createdDate:
-      'div:has(> p:text-is("Created Date")) div p',
-
-    projectLink:
-      'div:has(> p:text-is("Project")) a',
+    completedAt: '[data-testid="task-detail-completed-at"], text=Completed At',
   },
 
   // ─────────────────────────────────────────────────────────────

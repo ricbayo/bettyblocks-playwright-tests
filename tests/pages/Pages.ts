@@ -455,9 +455,6 @@ export class TasksPage extends BasePage {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TaskDetailPage
-// ─────────────────────────────────────────────────────────────────────────────
 export class TaskDetailPage extends BasePage {
   readonly backBtn: Locator;
   readonly btnEdit: Locator;
@@ -474,60 +471,33 @@ export class TaskDetailPage extends BasePage {
   readonly executionDate: Locator;
   readonly deadline: Locator;
   readonly createdDate: Locator;
+  readonly completedAt: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.backBtn = page.getByRole('link', { name: /back to tasks/i });
+    const s = S.taskDetail;
 
-    // Action buttons
-    this.btnEdit = page.getByRole('button', { name: /^edit$/i });
-    this.btnComplete = page.getByRole('button', { name: /^complete$/i });
-    this.btnDelete = page.getByRole('button', { name: /^delete$/i });
+    // Actions
+    this.backBtn = page.locator(s.btnBack);
+    this.btnEdit = page.locator(s.btnEdit);
+    this.btnComplete = page.locator(s.btnComplete);
+    this.btnDelete = page.locator(s.btnDelete);
 
-    // Header section
-    this.headerName = page
-      .locator('p', { hasText: 'Task Name' })
-      .locator('xpath=following-sibling::p[1]');
+    // Header
+    this.headerName = page.locator(s.headerName);
+    this.headerPriority = page.locator(s.headerPriority);
+    this.headerStatus = page.locator(s.headerStatus);
 
-    this.headerPriority = page
-      .locator('p', { hasText: 'Priority:' })
-      .locator('xpath=following-sibling::p[1]');
+    // Details
+    this.description = page.locator(s.description);
+    this.project = page.locator(s.projectLink);
+    this.assignedTo = page.locator(s.assignedTo);
+    this.executionDate = page.locator(s.executionDate);
+    this.deadline = page.locator(s.deadline);
+    this.createdDate = page.locator(s.createdDate);
 
-    this.headerStatus = page
-      .locator('p', { hasText: 'Status:' })
-      .locator('xpath=following-sibling::p[1]');
-
-    // Detail section
-    this.description = page
-      .locator('p', { hasText: 'Description' })
-      .locator('xpath=following-sibling::p[1]');
-
-    this.project = page
-      .locator('h4', { hasText: 'Task Details' })
-      .locator('..')
-      .locator('div')
-      .filter({
-        has: page.locator('p', { hasText: /^Project$/ })
-      })
-      .locator('a');
-
-    this.assignedTo = page
-      .locator('p', { hasText: /^Assigned To$/ })
-      .locator('..') // parent container
-      .locator('div p');
-
-    this.executionDate = page
-      .locator('p', { hasText: 'Execution Date' })
-      .locator('xpath=ancestor::div[1]//div/p[last()]');
-
-    this.deadline = page
-      .locator('p', { hasText: 'Deadline' })
-      .locator('xpath=ancestor::div[1]//div/p[last()]');
-
-    this.createdDate = page
-      .locator('p', { hasText: 'Created Date' })
-      .locator('xpath=ancestor::div[1]//div/p[last()]');
+    this.completedAt = page.locator(s.completedAt);
   }
 
   async goto(taskId: string | number) {
@@ -544,6 +514,7 @@ export class TaskDetailPage extends BasePage {
 
   async complete() {
     await this.btnComplete.click();
+    await this.page.waitForLoadState('networkidle');
     await this.quickWait(2000);
   }
 
