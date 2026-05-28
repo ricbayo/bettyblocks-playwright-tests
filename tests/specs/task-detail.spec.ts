@@ -1,4 +1,3 @@
-// tests/specs/task-detail.spec.ts
 import { expect, ProjectsPage, TaskDetailPage, TasksPage, test } from '../fixtures/fixtures';
 import { ProjectData, TaskData } from '../fixtures/test-data';
 
@@ -57,15 +56,39 @@ test.describe('Task Detail page — /tasks/:id', () => {
   });
 
   // ─────────────────────────────────────────────
-  // TD-01 Page load
+  // TEARDOWN (NEW)
+  // ─────────────────────────────────────────────
+  test.afterEach(async ({ page }) => {
+    const tasksPage = new TasksPage(page);
+
+    try {
+      await tasksPage.goto();
+
+      if (taskName) {
+        await tasksPage.clickDelete(taskName).catch(() => { });
+      }
+    } catch {
+      // ignore teardown failures
+    }
+
+    // optional: cleanup project if needed
+    try {
+      const projectsPage = new ProjectsPage(page);
+      await projectsPage.goto();
+
+      if (projectName) {
+        await projectsPage.clickDelete(projectName).catch(() => { });
+      }
+    } catch {
+      // ignore
+    }
+  });
+
   // ─────────────────────────────────────────────
   test('TD-01 task detail page loads at correct URL', async ({ page }) => {
     await expect(page).toHaveURL(new RegExp(`/tasks/${taskId}$`));
   });
 
-  // ─────────────────────────────────────────────
-  // TD-02 Action buttons visibility
-  // ─────────────────────────────────────────────
   test('TD-02 action buttons are visible', async ({ page }) => {
     const detail = new TaskDetailPage(page);
 
@@ -75,9 +98,6 @@ test.describe('Task Detail page — /tasks/:id', () => {
     await expect(detail.btnDelete).toBeVisible();
   });
 
-  // ─────────────────────────────────────────────
-  // TD-03 Header details
-  // ─────────────────────────────────────────────
   test('TD-03 header shows correct details', async ({ page }) => {
     const detail = new TaskDetailPage(page);
 
@@ -87,17 +107,11 @@ test.describe('Task Detail page — /tasks/:id', () => {
     await expect(detail.headerStatus).toContainText(/todo|to do|in progress/i);
   });
 
-  // ─────────────────────────────────────────────
-  // TD-04 Description
-  // ─────────────────────────────────────────────
   test('TD-04 description visible', async ({ page }) => {
     const detail = new TaskDetailPage(page);
     await expect(detail.description).toContainText('Detail test description');
   });
 
-  // ─────────────────────────────────────────────
-  // TD-05 Project link behavior
-  // ─────────────────────────────────────────────
   test('TD-05 project link behavior', async ({ page }) => {
     const detail = new TaskDetailPage(page);
 
@@ -107,16 +121,10 @@ test.describe('Task Detail page — /tasks/:id', () => {
     await expect(page).toHaveURL(/\/projects\/\d+/);
   });
 
-  // ─────────────────────────────────────────────
-  // TD-06 Assigned user
-  // ─────────────────────────────────────────────
   test('TD-06 assigned user visible', async ({ page }) => {
     await expect(new TaskDetailPage(page).assignedTo).toBeVisible();
   });
 
-  // ─────────────────────────────────────────────
-  // TD-07 Metadata fields
-  // ─────────────────────────────────────────────
   test('TD-07 metadata fields visible', async ({ page }) => {
     const detail = new TaskDetailPage(page);
 
@@ -125,31 +133,12 @@ test.describe('Task Detail page — /tasks/:id', () => {
     await expect(detail.createdDate).toBeVisible();
   });
 
-  // ─────────────────────────────────────────────
-  // TD-08 CompletedAt hidden
-  // ─────────────────────────────────────────────
-  // test('TD-08 completedAt hidden for open task', async ({ page }) => {
-  //   const detail = new TaskDetailPage(page);
-
-  //   const completedAt =
-  //     detail.completedAt ??
-  //     page.locator('[data-testid="task-detail-completed-at"]');
-
-  //   await expect(completedAt).toHaveCount(0);
-  // });
-
-  // ─────────────────────────────────────────────
-  // TD-09 Back navigation
-  // ─────────────────────────────────────────────
   test('TD-09 back navigates to /tasks', async ({ page }) => {
     const detail = new TaskDetailPage(page);
     await detail.clickBack();
     await expect(page).toHaveURL(/\/tasks$/);
   });
 
-  // ─────────────────────────────────────────────
-  // TD-10 Complete flow
-  // ─────────────────────────────────────────────
   test('TD-10 complete task flow', async ({ page }) => {
     const detail = new TaskDetailPage(page);
 
@@ -159,9 +148,6 @@ test.describe('Task Detail page — /tasks/:id', () => {
     await expect(detail.btnComplete).toBeHidden();
   });
 
-  // ─────────────────────────────────────────────
-  // TD-11 Edit flow
-  // ─────────────────────────────────────────────
   test('TD-11 edit task flow', async ({ page }) => {
     const detail = new TaskDetailPage(page);
 
@@ -179,9 +165,6 @@ test.describe('Task Detail page — /tasks/:id', () => {
     await expect(detail.headerName).toContainText(updated);
   });
 
-  // ─────────────────────────────────────────────
-  // TD-12 Delete flow
-  // ─────────────────────────────────────────────
   test('TD-12 delete task flow', async ({ page }) => {
     const detail = new TaskDetailPage(page);
 
@@ -191,8 +174,6 @@ test.describe('Task Detail page — /tasks/:id', () => {
 
     const tasksPage = new TasksPage(page);
 
-    await expect
-      .poll(async () => tasksPage.rowExists(taskName))
-      .toBe(false);
+    await expect.poll(async () => tasksPage.rowExists(taskName)).toBe(false);
   });
 });
