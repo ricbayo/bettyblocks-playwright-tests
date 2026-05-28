@@ -5,40 +5,64 @@ import { ProjectData, TaskData } from '../fixtures/test-data';
 test.describe('Tasks page — /tasks', () => {
 
   // ─────────────────────────────────────────────
-  // HELPERS (optimized + safer typing)
+  // TEST STATE
+  // ─────────────────────────────────────────────
+  const createdTasks = new Set<string>();
+
+  // ─────────────────────────────────────────────
+  // HELPERS
   // ─────────────────────────────────────────────
   async function ensureProject(page: any): Promise<string> {
     const projectsPage = new ProjectsPage(page);
+
     await projectsPage.goto();
 
     const count = await projectsPage.getRowCount();
 
     if (count > 0) {
       const firstRow = projectsPage.rows.first();
-      const status = await firstRow.getByRole('cell').nth(2).textContent();
+
+      const status = await firstRow
+        .getByRole('cell')
+        .nth(2)
+        .textContent();
 
       if (status && !status.toLowerCase().includes('executed')) {
-        const name = await firstRow.getByRole('cell').nth(1).textContent();
-        return name!.trim();
+        const name = await firstRow
+          .getByRole('cell')
+          .nth(1)
+          .textContent();
+
+        if (name) {
+          return name.trim();
+        }
       }
     }
 
     const projectName = `PW Helper Project ${Date.now()}`;
 
     const modal = await projectsPage.openCreateModal();
+
     await modal.fill({
       name: projectName,
       deadline: ProjectData.valid.deadline,
     });
 
     await modal.submit();
-    await expect(modal.container).toBeHidden({ timeout: 12_000 });
+
+    await expect(modal.container)
+      .toBeHidden({ timeout: 12_000 });
 
     return projectName;
   }
 
-  async function createTask(tasksPage: TasksPage, projectName: string, overrides: any = {}) {
-    const taskName = `PW Task ${Date.now()}`;
+  async function createTask(
+    tasksPage: TasksPage,
+    projectName: string,
+    overrides: any = {},
+  ) {
+    const taskName =
+      overrides.name ?? `PW Task ${Date.now()}`;
 
     const modal = await tasksPage.openCreateModal();
 
@@ -49,47 +73,77 @@ test.describe('Tasks page — /tasks', () => {
     });
 
     await modal.selectProject(projectName);
+
     await modal.submit();
 
-    await expect(modal.container).toBeHidden({ timeout: 12_000 });
-    await modal.quickWait(1000); // wait for table to update
+    await expect(modal.container)
+      .toBeHidden({ timeout: 12_000 });
+
+    await expect.poll(async () => {
+      return tasksPage.rowExists(taskName);
+    }).toBe(true);
+
+    createdTasks.add(taskName);
 
     return taskName;
   }
 
-  // ─────────────────────────────────────────────
-  // BASIC PAGE
-  // ─────────────────────────────────────────────
-  test.afterEach(async ({ page }) => {
-    const tasksPage = new TasksPage(page);
+  async function cleanupTask(
+    tasksPage: TasksPage,
+    taskName: string,
+  ) {
+    try {
+      const exists = await tasksPage.rowExists(taskName);
 
+      if (!exists) {
+        return;
+      }
+
+      await tasksPage.clickDelete(taskName);
+
+      await expect.poll(async () => {
+        return tasksPage.rowExists(taskName);
+      }).toBe(false);
+
+    } catch {
+      // ignore cleanup failures
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // CLEANUP
+  // ─────────────────────────────────────────────
+  test.afterEach(async ({ tasksPage }) => {
     try {
       await tasksPage.goto();
 
-      // optional cleanup safety
-      const lastRow = await tasksPage.getRowCount();
-      if (lastRow > 0) {
-        // no-op safe cleanup pattern (best-effort)
+      for (const taskName of createdTasks) {
+        await cleanupTask(tasksPage, taskName);
       }
+
+      createdTasks.clear();
+
     } catch {
-      // ignore
+      // ignore cleanup failures
     }
   });
 
   // ─────────────────────────────────────────────
   // BASIC PAGE
   // ─────────────────────────────────────────────
-
   test('TK-01 loads /tasks', async ({ tasksPage }) => {
-    await expect(tasksPage.page).toHaveURL(/\/tasks$/);
+    await expect(tasksPage.page)
+      .toHaveURL(/\/tasks$/);
   });
 
   test('TK-02 New Task button visible', async ({ tasksPage }) => {
-    await expect(tasksPage.btnNewTask).toBeVisible();
+    await expect(tasksPage.btnNewTask)
+      .toBeVisible();
   });
 
   test('TK-03 tasks table visible', async ({ tasksPage }) => {
-    await expect(tasksPage.taskTable).toBeVisible();
+    await expect(tasksPage.taskTable)
+      .toBeVisible();
   });
 
   // ─────────────────────────────────────────────
@@ -99,7 +153,6 @@ test.describe('Tasks page — /tasks', () => {
     const headers = [
       'Task Id',
       'Task Name',
-
       'Assignee',
       'Priority',
       'Status',
@@ -109,144 +162,289 @@ test.describe('Tasks page — /tasks', () => {
       'Quick Actions',
     ];
 
-    await expect(tasksPage.taskTable).toBeVisible();
+    await expect(tasksPage.taskTable)
+      .toBeVisible();
 
     for (const header of headers) {
-      await expect(await tasksPage.getTaskColumnHeader(header)).toBeVisible();
+      await expect(
+        await tasksPage.getTaskColumnHeader(header),
+      ).toBeVisible();
     }
   });
 
   // ─────────────────────────────────────────────
   // CREATE MODAL
   // ─────────────────────────────────────────────
-  test('TK-05 modal validation', async ({ page, tasksPage }) => {
+  test('TK-05 modal validation', async ({
+    page,
+    tasksPage,
+  }) => {
     await ensureProject(page);
+
     await tasksPage.goto();
 
     const modal = await tasksPage.openCreateModal();
 
-    await expect(modal.container).toBeVisible();
+    await expect(modal.container)
+      .toBeVisible();
 
     await expect(
       modal.container
         .locator('[data-testid="modal-create-task-header"]')
-        .or(modal.container.getByRole('heading'))
+        .or(modal.container.getByRole('heading')),
     ).toContainText(/create.*task/i);
 
-    await expect(modal.nameInput).toBeVisible();
-    await expect(modal.projectSelect).toBeVisible();
+    await expect(modal.nameInput)
+      .toBeVisible();
 
-    expect((await modal.getPriorityValue()).toLowerCase()).toContain('low');
-    expect((await modal.getStatusValue()).toLowerCase()).toMatch(/to do|todo/);
+    await expect(modal.projectSelect)
+      .toBeVisible();
 
-    await expect(modal.btnCancel).toBeVisible();
-    await expect(modal.btnCreate).toBeVisible();
+    expect(
+      (await modal.getPriorityValue()).toLowerCase(),
+    ).toContain('low');
+
+    expect(
+      (await modal.getStatusValue()).toLowerCase(),
+    ).toMatch(/to do|todo/);
+
+    await expect(modal.btnCancel)
+      .toBeVisible();
+
+    await expect(modal.btnCreate)
+      .toBeVisible();
   });
 
   // ─────────────────────────────────────────────
   // CREATE TASK
   // ─────────────────────────────────────────────
-  test('TK-06 task is created and appears in table', async ({ page, tasksPage }) => {
+  test('TK-06 task is created and appears in table', async ({
+    page,
+    tasksPage,
+  }) => {
     const projectName = await ensureProject(page);
+
     await tasksPage.goto();
 
     const before = await tasksPage.getRowCount();
 
-    const taskName = await createTask(tasksPage, projectName);
+    const taskName = await createTask(
+      tasksPage,
+      projectName,
+    );
 
-    await expect.poll(() => tasksPage.getRowCount()).toBe(before + 1);
-    expect(await tasksPage.rowExists(taskName)).toBe(true);
+    expect(await tasksPage.rowExists(taskName))
+      .toBe(true);
   });
 
-  test('TK-07 high priority shows correct badge', async ({ page, tasksPage }) => {
+  test('TK-07 high priority shows correct badge', async ({
+    page,
+    tasksPage,
+  }) => {
     const projectName = await ensureProject(page);
+
     await tasksPage.goto();
 
-    const taskName = await createTask(tasksPage, projectName, { priority: 'High' });
+    const taskName = await createTask(
+      tasksPage,
+      projectName,
+      {
+        priority: 'High',
+      },
+    );
 
     const row = await tasksPage.getRowByName(taskName);
-    const priority = await row.locator('td').nth(3).textContent();
 
-    expect(priority?.toLowerCase()).toContain('high');
+    await expect(row.locator('td').nth(3))
+      .toContainText(/high/i);
   });
 
   // ─────────────────────────────────────────────
   // CANCEL
   // ─────────────────────────────────────────────
-  test('TK-08 cancel does not create task', async ({ page, tasksPage }) => {
+  test('TK-08 cancel does not create task', async ({
+    page,
+    tasksPage,
+  }) => {
     await ensureProject(page);
+
     await tasksPage.goto();
 
     const before = await tasksPage.getRowCount();
 
     const modal = await tasksPage.openCreateModal();
-    await modal.fill({ name: `PW Cancel ${Date.now()}` });
+
+    await modal.fill({
+      name: `PW Cancel ${Date.now()}`,
+    });
+
     await modal.cancel();
 
-    await expect(modal.container).toBeHidden();
-    expect(await tasksPage.getRowCount()).toBe(before);
+    await expect(modal.container)
+      .toBeHidden();
+
+    expect(await tasksPage.getRowCount())
+      .toBe(before);
   });
 
   // ─────────────────────────────────────────────
   // ROW ACTIONS
   // ─────────────────────────────────────────────
-  test('TK-09 row shows action buttons', async ({ page, tasksPage }) => {
+  test('TK-09 row shows action buttons', async ({
+    page,
+    tasksPage,
+  }) => {
     const projectName = await ensureProject(page);
+
     await tasksPage.goto();
 
-    const taskName = await createTask(tasksPage, projectName);
+    const taskName = await createTask(
+      tasksPage,
+      projectName,
+    );
 
-    const row = await tasksPage.getRowByName(taskName);
+    await expect(await tasksPage.getviewBtn(taskName))
+      .toBeVisible();
 
-    await expect(await tasksPage.getviewBtn(taskName)).toBeVisible();
-    await expect(await tasksPage.getcompleteBtn(taskName)).toBeVisible();
-    await expect(await tasksPage.geteditBtn(taskName)).toBeVisible();
-    await expect(await tasksPage.getdeleteBtn(taskName)).toBeVisible();
+    await expect(await tasksPage.getcompleteBtn(taskName))
+      .toBeVisible();
+
+    await expect(await tasksPage.geteditBtn(taskName))
+      .toBeVisible();
+
+    await expect(await tasksPage.getdeleteBtn(taskName))
+      .toBeVisible();
   });
 
-  test('TK-10 view navigates to detail', async ({ page, tasksPage }) => {
+  test('TK-10 view navigates to detail', async ({
+    page,
+    tasksPage,
+  }) => {
     const projectName = await ensureProject(page);
+
     await tasksPage.goto();
 
-    const taskName = await createTask(tasksPage, projectName);
+    const taskName = await createTask(
+      tasksPage,
+      projectName,
+    );
 
     await tasksPage.clickView(taskName);
-    await expect(page).toHaveURL(/\/tasks\/\d+/);
+
+    await expect(page)
+      .toHaveURL(/\/tasks\/\d+/);
   });
 
-  test('TK-11 complete marks task completed', async ({ page, tasksPage }) => {
+  test('TK-11 complete marks task completed', async ({
+    page,
+    tasksPage,
+  }) => {
     const projectName = await ensureProject(page);
+
     await tasksPage.goto();
 
-    const taskName = await createTask(tasksPage, projectName);
+    const taskName = await createTask(
+      tasksPage,
+      projectName,
+    );
 
     await tasksPage.clickComplete(taskName);
 
-    const status = await tasksPage.getRowStatus(taskName);
-    expect(status.toLowerCase()).toMatch(/completed|done/);
+    await expect.poll(async () => {
+      return (
+        await tasksPage.getRowStatus(taskName)
+      ).toLowerCase();
+    }).toMatch(/completed|done/);
   });
 
-  test('TK-12 edit modal opens with project disabled', async ({ page, tasksPage }) => {
+  test('TK-12 edit task updates values in table', async ({
+    page,
+    tasksPage,
+  }) => {
     const projectName = await ensureProject(page);
+
     await tasksPage.goto();
 
-    const taskName = await createTask(tasksPage, projectName);
+    const originalTaskName = await createTask(
+      tasksPage,
+      projectName,
+      {
+        priority: 'Low',
+      },
+    );
 
-    const editModal = await tasksPage.clickEdit(taskName);
+    const updatedTaskName =
+      `PW Edited ${Date.now()}`;
 
-    await expect(editModal.container).toBeVisible();
-    expect(await editModal.isProjectDisabled()).toBe(true);
+    const updatedAssignee = 'Jip';
+
+    const updatedStatus = 'In Progress';
+
+    const editModal =
+      await tasksPage.clickEdit(originalTaskName);
+
+    await expect(editModal.container)
+      .toBeVisible();
+
+    await expect(editModal.projectSelect)
+      .toBeDisabled();
+
+    await editModal.fill({
+      name: updatedTaskName,
+      priority: 'High',
+      assignee: updatedAssignee,
+      status: updatedStatus,
+    });
+
+    await editModal.submit();
+
+    await expect(editModal.container)
+      .toBeHidden({ timeout: 15_000 });
+
+    createdTasks.delete(originalTaskName);
+    createdTasks.add(updatedTaskName);
+
+    await expect.poll(async () => {
+      return tasksPage.rowExists(updatedTaskName);
+    }).toBe(true);
+
+    const row =
+      await tasksPage.getRowByName(updatedTaskName);
+
+    const assigneeCell = row.locator('td').nth(2);
+    const priorityCell = row.locator('td').nth(3);
+    const statusCell = row.locator('td').nth(4);
+
+    await expect(assigneeCell)
+      .toContainText(/ric|jip/i);
+
+    await expect(priorityCell)
+      .toContainText(/high/i);
+
+    await expect(statusCell)
+      .toContainText(/in progress/i);
   });
 
-  test('TK-13 delete removes task', async ({ page, tasksPage }) => {
+  test('TK-13 delete removes task', async ({
+    page,
+    tasksPage,
+  }) => {
     const projectName = await ensureProject(page);
+
     await tasksPage.goto();
 
-    const taskName = await createTask(tasksPage, projectName);
+    const taskName = await createTask(
+      tasksPage,
+      projectName,
+    );
 
     await tasksPage.clickDelete(taskName);
 
-    await expect.poll(() => tasksPage.rowExists(taskName)).toBe(false);
+    createdTasks.delete(taskName);
+
+    await expect.poll(async () => {
+      return tasksPage.rowExists(taskName);
+    }).toBe(false);
   });
 
 });

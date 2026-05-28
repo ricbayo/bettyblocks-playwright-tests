@@ -172,6 +172,8 @@ export class CreateTaskModal extends Modals {
   async fill(data: {
     name?: string;
     description?: string;
+    assignee?: string;
+    status?: string;
     priority?: string;
     executionDate?: string;
     deadline?: string;
@@ -181,6 +183,8 @@ export class CreateTaskModal extends Modals {
     if (data.priority) await this.prioritySelect.selectOption(data.priority);
     if (data.executionDate) await this.fillDate(this.execDateInput, data.executionDate);
     if (data.deadline) await this.fillDate(this.deadlineInput, data.deadline);
+    if (data.assignee) await this.assignedInput.selectOption(data.assignee);
+    if (data.status) await this.statusSelect.selectOption(data.status);
   }
 
   async selectProject(projectName: string) {
@@ -238,5 +242,19 @@ export class EditTaskModal extends CreateTaskModal {
     return this.projectSelect.isDisabled();
   }
 
-  async submit() { await this.btnSave.click(); }
+  async submit() {
+    await expect(this.btnSave).toBeVisible();
+    await expect(this.btnSave).toBeEnabled();
+
+    await this.btnSave.click();
+    await this.quickWait();
+
+    if (await this.isVisible()) {
+      // If still visible, likely validation error
+      await this.btnSave.click();
+    }
+
+    // optional small wait for UI transition
+    await this.quickWait(300);
+  }
 }
