@@ -45,11 +45,18 @@ export class BasePage {
 
   /** Confirm a dialog if it appears */
   async confirmDialog() {
+    await this.quickWait();
     const dialog = this.page
       .locator('[data-testid="confirm-yes"]')
       .or(this.page.getByRole('button', { name: /ok|confirm|yes/i }));
     await dialog.click();
-    await this.quickWait(3000); // wait for dialog to process
+    await this.quickWait(); // wait for dialog to process
+    await dialog.isVisible().then(async (visible) => {
+      if (visible) {
+        await dialog.click();
+      }
+    });
+    await this.quickWait(2000); // wait for dialog to process
   }
 
   /** Get inner text safely */

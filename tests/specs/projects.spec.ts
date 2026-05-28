@@ -2,14 +2,35 @@ import { expect, test } from '../fixtures/fixtures';
 import { ProjectData } from '../fixtures/test-data';
 
 test.describe('Projects page — /projects', () => {
+  const createdProjects: string[] = [];
+
+  // ─────────────────────────────
+  // SETUP / TEARDOWN
+  // ─────────────────────────────
 
   test.beforeEach(async ({ projectsPage }) => {
+    await projectsPage.goto();
+
     await expect(projectsPage.table).toBeVisible();
 
-    await expect.poll(
-      async () => await projectsPage.rows.count(),
-      { timeout: 10000 }
-    ).toBeGreaterThan(0);
+    // ensure table is loaded (no assumption about data existence)
+    await expect(projectsPage.rows.first()).toBeVisible();
+  });
+
+  test.afterEach(async ({ projectsPage }) => {
+    await projectsPage.goto();
+
+    for (const name of createdProjects) {
+      if (await projectsPage.rowExists(name)) {
+        await projectsPage.clickDelete(name);
+
+        await expect.poll(async () =>
+          await projectsPage.rowExists(name)
+        ).toBe(false);
+      }
+    }
+
+    createdProjects.length = 0;
   });
 
   // ─────────────────────────────
@@ -51,11 +72,8 @@ test.describe('Projects page — /projects', () => {
 
     await expect(modal.statusSelect).toBeVisible();
 
-    expect((await modal.getStatusValue()).toLowerCase())
-      .toContain('new');
-
-    expect(await modal.isStatusDisabled())
-      .toBe(true);
+    expect((await modal.getStatusValue()).toLowerCase()).toContain('new');
+    expect(await modal.isStatusDisabled()).toBe(true);
   });
 
   // ─────────────────────────────
@@ -68,10 +86,11 @@ test.describe('Projects page — /projects', () => {
       name: `PW ${Date.now()}`
     };
 
+    createdProjects.push(data.name);
+
     await projectsPage.createProject(data);
 
-    expect(await projectsPage.rowExists(data.name))
-      .toBe(true);
+    expect(await projectsPage.rowExists(data.name)).toBe(true);
   });
 
   test('PR-07 created project has New status', async ({ projectsPage }) => {
@@ -79,6 +98,8 @@ test.describe('Projects page — /projects', () => {
       ...ProjectData.valid,
       name: `PW Status ${Date.now()}`
     };
+
+    createdProjects.push(data.name);
 
     await projectsPage.createProject(data);
 
@@ -105,18 +126,20 @@ test.describe('Projects page — /projects', () => {
     const modal = await projectsPage.clickEdit(projectName);
 
     await expect(modal.container).toBeVisible();
-
-    expect(await modal.isStatusEditable())
-      .toBe(true);
+    expect(await modal.isStatusEditable()).toBe(true);
   });
 
   test('PR-10 Copy creates duplicated project', async ({ projectsPage }) => {
     const projectName = await projectsPage.getFirstProjectName();
 
+    const copyName = `${projectName}_copy`;
+
+    createdProjects.push(copyName);
+
     await projectsPage.clickCopy(projectName);
 
     await expect.poll(async () =>
-      await projectsPage.rowExists(`${projectName}_copy`)
+      await projectsPage.rowExists(copyName)
     ).toBe(true);
   });
 

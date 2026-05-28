@@ -249,7 +249,7 @@ export class EditTaskModal extends CreateTaskModal {
     await this.btnSave.click();
     await this.quickWait();
 
-    if (await this.isVisible()) {
+    if (await this.btnSave.isVisible()) {
       // If still visible, likely validation error
       await this.btnSave.click();
     }

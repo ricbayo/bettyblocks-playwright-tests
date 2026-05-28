@@ -23,6 +23,20 @@ test.describe('Project Detail page — /projects/:id', () => {
     projectId = page.url().split('/projects/')[1];
   });
 
+
+  // ── teardown ─────────────────────────────────────────────────
+  test.afterEach(async ({ projectsPage }) => {
+    await projectsPage.goto();
+
+    if (await projectsPage.rowExists(projectName)) {
+      await projectsPage.clickDelete(projectName);
+
+      await expect.poll(async () =>
+        await projectsPage.rowExists(projectName)
+      ).toBe(false);
+    }
+  });
+
   // ── Page structure ─────────────────────────────────────────────────
   test('PD-01 project detail page loads at correct URL', async ({ page }) => {
     await expect(page).toHaveURL(new RegExp(`/projects/${projectId}`));
@@ -176,6 +190,25 @@ test.describe('Project Detail page — /projects/:id', () => {
     await page.waitForLoadState('networkidle');
     const status = await detailPage.getText(detailPage.statusEl);
     expect(status.toLowerCase()).toMatch(/executed|closed/);
+  });
+
+  test('PD-17 Close Project marks project and task as Executed', async ({ page }) => {
+    const detailPage = new ProjectDetailPage(page);
+    const taskName = `PW Complete ${Date.now()}`;
+    const modal = await detailPage.openAddTaskModal();
+    await modal.fill({ name: taskName, deadline: TaskData.valid.deadline });
+    await modal.submit();
+    await expect(modal.container).toBeHidden({ timeout: 12_000 });
+    await page.waitForLoadState('networkidle');
+
+    await detailPage.closeProject();
+    await page.waitForLoadState('networkidle');
+    const status = await detailPage.getText(detailPage.statusEl);
+    expect(status.toLowerCase()).toMatch(/executed|closed/);
+
+    const row = await detailPage.getTaskRowByName(taskName);
+    const rowstatus = await detailPage.getText(row.locator('td').nth(3)); // Assuming Status is the 4th column
+    expect(rowstatus.toLowerCase()).toMatch(/completed|done/);
   });
 
 });
